@@ -9,7 +9,7 @@ This project sets up a PostgreSQL database and pgAdmin for managing the database
 - [Data used on proyect](https://www.kaggle.com/datasets/yasserh/breast-cancer-dataset)
 
 ## Project Structure
-
+```
 .
 ├── docker-compose.yml # Docker Compose configuration file
 ├── kafka_scripts/ # Directory for Kafka scripts
@@ -20,6 +20,7 @@ This project sets up a PostgreSQL database and pgAdmin for managing the database
 ├── .env # Environment variables file
 ├── postgres_vol/ # Volume for PostgreSQL data
 └── pgadmin_vol/ # Volume for pgAdmin data
+```
 
 
 ## Configuration
