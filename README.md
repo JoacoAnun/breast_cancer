@@ -10,22 +10,14 @@ This project sets up a PostgreSQL database and pgAdmin for managing the database
 
 ## Project Structure
 
-.
 ├── docker-compose.yml
-
 ├── kafka_scripts/
-
         ├── kafka_consumer.py # Kafka consumer script
         └── kafka_producer.py # Kafka producer script 
-
 ├── sql_scritps
-
         └── table_creation.sql # SQL script to create tables
-
 ├── .env
-
 ├── postgres_vol/ # Volume for PostgreSQL data
-
 └── pgadmin_vol/ # Volume for pgAdmin data
 
 
