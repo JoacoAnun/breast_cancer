@@ -1,0 +1,75 @@
+services:
+
+  zookeeper:
+    image: 'bitnami/zookeeper:3.7.0-debian-10-r70'
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+
+  kafka:
+    image: 'bitnami/kafka:2.8.0-debian-10-r42'
+    ports:
+      - '9093:9093'          #change to 9093 to access external from your linux host
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT     #add aditional listener for external
+      KAFKA_CFG_LISTENERS: CLIENT://:9092,EXTERNAL://:9093                              #9092 will be for other containers, 9093 for your linux client
+      KAFKA_CFG_ADVERTISED_LISTENERS: CLIENT://kafka:9092,EXTERNAL://localhost:9093     #9092 will be for other containers, 9093 for your linux client
+      KAFKA_INTER_BROKER_LISTENER_NAME: CLIENT
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: True
+
+    depends_on:
+      - zookeeper
+
+
+  init-kafka:
+    image: 'bitnami/kafka:2.8.0-debian-10-r42'
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      cd /opt/bitnami/kafka/bin
+      # blocks until kafka is reachable
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --list
+
+      echo -e 'Creating kafka topics'
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic breast-cancer-streaming --replication-factor 2 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --list
+
+      echo -e 'Creating kafka local console consumer'
+      ./kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic breast-cancer-streaming
+
+      echo -e 'Successfully created kafka local console consumer'
+      echo -e 'Waiting for messages...'
+      "
+
+  postgres:
+    image: postgres:15.4
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      DATABASE_HOST: 127.0.0.1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: breast_cancer_db
+    volumes:
+      - ./postgres_vol:/var/lib/postgresql/data # Persist data
+  pgadmin:
+    image: dpage/pgadmin4:7.6
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "80:80"
+    volumes:
+      - ./pgadmin_vol:/var/lib/pgadmin # Persist data, chmod 777 -R pgadmin_vol to fix permission
+    depends_on:
+      - postgres
