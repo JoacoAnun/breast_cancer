@@ -8,7 +8,7 @@ config = dotenv_values(".env")
 
 DB_URL = config["DB_URL"]
 TABLE_NAME = config["TABLE_NAME"]
-CSV_PATH = config["CSV_PATH"]
+TRAINING_DATA = config["TRAINING_DATA"]
 
 
 def connect_to_db():
@@ -55,7 +55,7 @@ def main():
     """
     conn = connect_to_db()
     if conn is not None:
-        df = pd.read_csv(CSV_PATH)
+        df = pd.read_csv(TRAINING_DATA)
         load_data_to_table(conn, df, TABLE_NAME)
     else:
         print("Failed to connect to the database. Exiting...")
