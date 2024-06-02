@@ -30,15 +30,19 @@ This project sets up a PostgreSQL database and pgAdmin for managing the database
 Create a `.env` file in the root directory of the project and add the following content:
 
 ```plaintext
+# Postgres
 DATABASE_HOST=DATABASE_HOST
 POSTGRES_USER=POSTGRES_USER
 POSTGRES_PASSWORD=POSTGRES_PASSWORD
 POSTGRES_DB=POSTGRES_DB
-DB_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}"
+POSTGRES_PORT=PORT
+DB_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+# PGAdmin
 PGADMIN_DEFAULT_EMAIL=PGADMIN_DEFAULT_EMAIL
 PGADMIN_DEFAULT_PASSWORD=PGADMIN_DEFAULT_PASSWORD
+# Training Data
 TABLE_NAME=TABLE_NAME
-CSV_PATH=CSV_PATH
+TRAINING_DATA=CSV_PATH
 Replace secure_postgres_password and secure_admin_password with your desired secure passwords.
 
 The docker-compose.yml file and other scripts are configured to use the environment variables defined in the .env file.
