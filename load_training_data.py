@@ -7,7 +7,7 @@ from dotenv import dotenv_values
 config = dotenv_values(".env")
 
 DB_URL = config["DB_URL"]
-TABLE_NAME = config["TABLE_NAME"]
+TABLE_NAME = config["TRAINING_TABLE_NAME"]
 TRAINING_DATA = config["TRAINING_DATA"]
 
 
